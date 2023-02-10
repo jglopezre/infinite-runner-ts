@@ -1,9 +1,20 @@
+import Phaser from 'phaser'
 import './style.css'
-import typescriptLogo from './typescript.svg'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    Hola
-  </div>
-`
+import Game from './scenes/Game'
 
+const config: Phaser.Types.Core.GameConfig = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 640,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 200 } 
+    }
+  },
+  scene: [Game]
+
+}
+
+export default new Phaser.Game(config)
