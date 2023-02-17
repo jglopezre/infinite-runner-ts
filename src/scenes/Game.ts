@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import AnimationsKeys from "../consts/AnimationKeys";
 import TextureKeys from "../consts/TextureKeys";
+import RocketMouse from "../game/RocketMouse";
 
 export default class Game extends Phaser.Scene {
 
@@ -38,6 +39,12 @@ export default class Game extends Phaser.Scene {
         rightEdge + width,
         rightEdge + width + 800 
       )
+
+      const overlap = this.#bookCases.find(bookCase => {
+        return Math.abs(this.#window1.x - bookCase.x) <= this.#window1.width
+      })
+
+      this.#window1.visible = !overlap
     }
 
     width = this.#window2.width
@@ -46,6 +53,12 @@ export default class Game extends Phaser.Scene {
         this.#window1.x + width,
         this.#window1.x + width + 800
       )
+
+      const overlap = this.#bookCases.find(bookCase => {
+        return Math.abs(this.#window2.x - bookCase.x) <= this.#window2.width
+      })
+
+      this.#window2.visible = !overlap
     }
   }
 
@@ -59,13 +72,26 @@ export default class Game extends Phaser.Scene {
         rightEdge + width,
         rightEdge + width + 800
       )
+
+      const overlap = this.#windows.find(window => {
+        return Math.abs(this.#bookCase1.x - window.x) <= window.width
+      })
+
+      this.#bookCase1.visible = !overlap
     }
+
     width = this.#bookCase2.width
     if(this.#bookCase2.x + width < scrollX){
       this.#bookCase2.x = Phaser.Math.Between(
         this.#bookCase1.x + width,
         this.#bookCase1.x + width + 800
       )
+
+      const overlap = this.#windows.find(window => {
+        return Math.abs(this.#bookCase2.x - window.x) <= window.width
+      })
+
+      this.#bookCase2.visible = !overlap
     }
   }
 
@@ -91,13 +117,14 @@ export default class Game extends Phaser.Scene {
 
     this.#bookCases = [this.#bookCase1, this.#bookCase2]
     
-    const mouse = this.physics.add.sprite(width * 0.5, height - 30, TextureKeys.RocketMouse)
+    const mouse = new RocketMouse(this, width * 0.5, height - 30)
+    this.add.existing(mouse)
+    /* const mouse = this.physics.add.sprite(width * 0.5, height - 30, TextureKeys.RocketMouse)
       .setOrigin(0.5, 1)
-      .play(AnimationsKeys.RocketMouseRun)
+      .play(AnimationsKeys.RocketMouseRun) */
 
     const body = mouse.body as Phaser.Physics.Arcade.Body  //Type-Casting, important to styudy
     body.setCollideWorldBounds(true)
-
     body.setVelocityX(200)
 
     this.physics.world.setBounds(
