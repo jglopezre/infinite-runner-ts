@@ -7,6 +7,8 @@ enum TextureKeys {
   Window2 = 'window-2',
   BookCase1 = 'book-case-1',
   BookCase2 = 'book-case-2',
+  LaserMiddle = 'laser-middle',
+  LaserEnd = 'laser-end'
 }
 
 export default TextureKeys
