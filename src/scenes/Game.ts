@@ -163,7 +163,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.overlap(
       this.#laserObstacle,
       mouse,
-      this.#handleOverlapLaser(), //TODO This requires attention
+      this.#handleOverlapLaser,
       undefined,
       this
     )

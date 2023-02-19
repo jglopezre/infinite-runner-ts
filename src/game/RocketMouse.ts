@@ -1,12 +1,21 @@
-import Phaser from "phaser"
+import Phaser, { Scene } from "phaser"
 import AnimationsKeys from "../consts/AnimationKeys"
+import SceneKeys from "../consts/SceneKeys"
 import TextureKeys from "../consts/TextureKeys"
+
+enum MouseState {
+  Running,
+  Killed,
+  Dead
+}
 
 export default class RocketMouse extends Phaser.GameObjects.Container {
 
+  #mouseState = MouseState.Killed
   #flames!: Phaser.GameObjects.Sprite
   #cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-  #mouse!: Phaser.GameObjects.Sprite 
+  #mouse!: Phaser.GameObjects.Sprite
+  #isDead: boolean = false
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y)
@@ -32,27 +41,65 @@ export default class RocketMouse extends Phaser.GameObjects.Container {
     this.#cursors = scene.input.keyboard.createCursorKeys()
   }
 
+  enableJetPack(enable: boolean = true) {
+    this.#flames.setVisible(enable)
+  }
+
+  kill() {
+    if(this.#mouseState !== MouseState.Running) {
+      return
+    }
+
+    this.#mouse.play(AnimationsKeys.RocketMouseDeath)
+
+    const body = this.body as Phaser.Physics.Arcade.Body
+    body.setAccelerationY(0)
+    body.setVelocity(1000, 0)
+    this.enableJetPack(false)
+  }
+  
   preUpdate() {
     const body = this.body as Phaser.Physics.Arcade.Body
 
-    if(this.#cursors.space?.isDown) {
-      body.setAccelerationY(-800)
-      this.enableJetPack(true)
-      this.#mouse.play(AnimationsKeys.RocketMouseFly, true)
+    switch (this.#mouseState) {
+      case MouseState.Running: {
 
-    } else {
-      body.setAccelerationY(400)
-      this.enableJetPack(false)
+        if(this.#cursors.space?.isDown) {
+          body.setAccelerationY(-800)
+          this.enableJetPack(true)
+          this.#mouse.play(AnimationsKeys.RocketMouseFly, true)
 
+        } else {
+          body.setAccelerationY(400)
+          this.enableJetPack(false)
+
+        }
+        if(body.blocked.down) {
+          this.#mouse.play(AnimationsKeys.RocketMouseRun, true)
+        } else if (body.velocity.y > 0) {
+          this.#mouse.play(AnimationsKeys.RocketMouseFall, true)
+        }
+        break
+      }
+
+      case MouseState.Killed: {
+        body.velocity.x *= 0.98
+        if (body.velocity.x <= 5) {
+          this.#mouseState = MouseState.Dead
+        }
+        break
+      }
+
+      case MouseState.Dead: {
+        body.setVelocity(0, 0)
+
+        if(!this.scene.scene.isActive(SceneKeys.GameOver) && !this.#isDead){
+          this.scene.scene.run(SceneKeys.GameOver)
+          this.#isDead = true
+        }
+        
+        break
+      }
     }
-    if(body.blocked.down) {
-      this.#mouse.play(AnimationsKeys.RocketMouseRun, true)
-    } else if (body.velocity.y > 0) {
-      this.#mouse.play(AnimationsKeys.RocketMouseFall, true)
-    }
-  }
-
-  enableJetPack(enable: boolean = true) {
-    this.#flames.setVisible(enable)
   }
 }

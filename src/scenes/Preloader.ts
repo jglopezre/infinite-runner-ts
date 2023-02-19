@@ -30,10 +30,7 @@ export default class Preloader extends Phaser.Scene {
         frameHeight: 64
       }
     )
-
   }
-
-  
 
   create() {
     this.anims.create({
@@ -65,7 +62,12 @@ export default class Preloader extends Phaser.Scene {
         frame: 5
       }]
     })
-    
+
+    this.anims.create({
+      key: AnimationsKeys.RocketMouseDeath,
+      frames: this.anims.generateFrameNumbers(TextureKeys.RocketMouse, {start: 6, end: 7}),
+      frameRate: 10,
+    })
 
     this.scene.start(SceneKeys.Game)
   }

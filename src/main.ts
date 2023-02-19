@@ -3,6 +3,7 @@ import './style.css'
 
 import Preloader from './scenes/Preloader'
 import Game from './scenes/Game'
+import GameOver from './scenes/GameOver'
 
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -17,7 +18,7 @@ const config: Phaser.Types.Core.GameConfig = {
       
     }
   },
-  scene: [Preloader, Game]
+  scene: [Preloader, Game, GameOver]
 
 }
 
