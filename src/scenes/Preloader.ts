@@ -18,6 +18,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image(TextureKeys.BookCase2, 'house/object_bookcase2.png')
     this.load.image(TextureKeys.LaserMiddle, 'house/object_laser.png')
     this.load.image(TextureKeys.LaserEnd, 'house/object_laser_end.png')
+    this.load.image(TextureKeys.Coin, 'house/object_coin.png')
 
     this.load.spritesheet(TextureKeys.RocketMouse, 'mouse/rocket_mouse_spritesheet.png', {
         frameWidth: 134,

@@ -11,7 +11,7 @@ enum MouseState {
 
 export default class RocketMouse extends Phaser.GameObjects.Container {
 
-  #mouseState = MouseState.Killed
+  #mouseState = MouseState.Running
   #flames!: Phaser.GameObjects.Sprite
   #cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   #mouse!: Phaser.GameObjects.Sprite
@@ -93,6 +93,8 @@ export default class RocketMouse extends Phaser.GameObjects.Container {
       case MouseState.Dead: {
         body.setVelocity(0, 0)
 
+        //TODO put this function in other module using Paser.Events.EventEmitter
+        
         if(!this.scene.scene.isActive(SceneKeys.GameOver) && !this.#isDead){
           this.scene.scene.run(SceneKeys.GameOver)
           this.#isDead = true
