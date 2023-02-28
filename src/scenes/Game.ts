@@ -20,6 +20,7 @@ export default class Game extends Phaser.Scene {
   #coins!: Phaser.Physics.Arcade.StaticGroup
   #scoreLabel!: Phaser.GameObjects.Text
   #score: number = 0
+  #mouse!: RocketMouse
 
   constructor() {
     super('game')
@@ -91,7 +92,7 @@ export default class Game extends Phaser.Scene {
         this.#bookCase1.x + width,
         this.#bookCase1.x + width + 800
       )
-
+      
       const overlap = this.#windows.find(window => {
         return Math.abs(this.#bookCase2.x - window.x) <= window.width
       })
@@ -150,8 +151,11 @@ export default class Game extends Phaser.Scene {
       const body = coin.body as Phaser.Physics.Arcade.StaticBody
       body.setCircle(body.width * 0.5)
       body.enable = true
+      
+      body.updateFromGameObject()
 
       x += coin.width * 1.5
+      
     }
   }
 
@@ -164,6 +168,31 @@ export default class Game extends Phaser.Scene {
     this.#score += 1
     this.#scoreLabel.text = `Score: ${this.#score}` 
 
+  }
+
+  #teleporterBackwards() {
+    const scrollX = this.cameras.main.scrollX
+    const MAX_X = 2380
+
+    if(scrollX > MAX_X) {
+      this.#mouse.x -= MAX_X
+      this.#mouseHole.x -= MAX_X
+      this.#windows.forEach(win =>  win.x -= MAX_X)
+      this.#bookCases.forEach(bookCase => bookCase.x -= MAX_X)
+
+      this.#laserObstacle.x -= MAX_X
+      const laserBody = this.#laserObstacle.body as Phaser.Physics.Arcade.Body
+      laserBody.x -= MAX_X
+
+      this.#spawnCoins()
+      this.#coins.children.each(child => {
+        const coin = child as Phaser.Physics.Arcade.Sprite
+        if(!coin.active) return
+        coin.x -= MAX_X
+        const body = coin.body as Phaser.Physics.Arcade.StaticBody
+        body.updateFromGameObject()
+      })
+    }
   }
 
   init() {
@@ -198,24 +227,24 @@ export default class Game extends Phaser.Scene {
     this.#coins = this.physics.add.staticGroup()
     this.#spawnCoins()
     
-    const mouse = new RocketMouse(this, width * 0.5, height - 30)
-    this.add.existing(mouse)
+    this.#mouse = new RocketMouse(this, width * 0.5, height - 30)
+    this.add.existing(this.#mouse)
 
-    const body = mouse.body as Phaser.Physics.Arcade.Body  //Type-Casting, important to styudy
+    const body = this.#mouse.body as Phaser.Physics.Arcade.Body  //Type-Casting, important to styudy
     body.setCollideWorldBounds(true)
     body.setVelocityX(200)
 
     this.physics.world.setBounds(
       0, 0,
-      Number.MAX_SAFE_INTEGER, height -30
+      Number.MAX_SAFE_INTEGER, height -55
     )
 
-    this.cameras.main.startFollow(mouse)
+    this.cameras.main.startFollow(this.#mouse)
     this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height)
 
     this.physics.add.overlap(
       this.#laserObstacle,
-      mouse,
+      this.#mouse,
       this.#handleOverlapLaser,
       undefined,
       this
@@ -223,7 +252,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.#coins,
-      mouse,
+      this.#mouse,
       this.#handleCollectCoin,
       undefined,
       this
@@ -244,5 +273,6 @@ export default class Game extends Phaser.Scene {
     this.#wrappWindows()
     this.#wrapBookCase()
     this.#wrapLaserObstacle()
+    this.#teleporterBackwards()
   }
 }
