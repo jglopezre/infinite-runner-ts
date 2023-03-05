@@ -1,4 +1,4 @@
-import Phaser, { Scene } from "phaser"
+import Phaser from "phaser"
 import AnimationsKeys from "../consts/AnimationKeys"
 import SceneKeys from "../consts/SceneKeys"
 import TextureKeys from "../consts/TextureKeys"

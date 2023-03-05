@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import AnimationsKeys from "../consts/AnimationKeys";
 import TextureKeys from "../consts/TextureKeys";
 import LaserObstacle from "../game/LaserObstacle";
 import RocketMouse from "../game/RocketMouse";
