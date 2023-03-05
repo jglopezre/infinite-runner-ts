@@ -121,7 +121,7 @@ export default class Game extends Phaser.Scene {
   }
 
   #handleOverlapLaser(obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) {
-    console.log('overlap')
+    this.#mouse.kill()
   }
 
   #spawnCoins() {

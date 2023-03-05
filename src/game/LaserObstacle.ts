@@ -36,16 +36,4 @@ export default class LaserObstacle extends Phaser.GameObjects.Container {
     this.#body.position.y = this.y
   }
 
-  /* #setBodyHeigth(): void {
-    
-    this.#bodyHeight = this.#top.displayHeight + this.#middle.displayHeight
-  }
-
-  setHeigth(height: number): void {
-    this.#middle.setDisplaySize(this.#middle.width, height)
-    this.#bottom.y = this.#top.displayHeight +  this.#middle.displayHeight
-    console.log(`height: ${height}`)
-    this.#setBodyHeigth()
-  } */
-
 }
